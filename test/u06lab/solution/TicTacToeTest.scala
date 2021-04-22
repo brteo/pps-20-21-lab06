@@ -16,11 +16,18 @@ class TicTacToeTest {
   @Test
   def placeAnyMarkTest() = {
     // Exercise 2: implement placeAnyMark such that..
-    val output1:String = "... ... ..X ... ... .X. ... ... X.. \n... ..X ... ... .X. ... ... X.. ... \n..X ... ... .X. ... ... X.. ... ... \n"
+    val output1:String = "" +
+      "... ... ..X ... ... .X. ... ... X.. \n" +
+      "... ..X ... ... .X. ... ... X.. ... \n" +
+      "..X ... ... .X. ... ... X.. ... ... \n"
     printBoardsToConsole(placeAnyMark(List(),X))
     assertEquals(output1,printBoardsToString(placeAnyMark(List(),X)))
 
-    val output2:String = "O.. O.. O.X O.. O.. OX. O.. O.. \n... ..X ... ... .X. ... ... X.. \n..X ... ... .X. ... ... X.. ... \n"
+    println()
+    val output2:String = "" +
+      "O.. O.. O.X O.. O.. OX. O.. O.. \n" +
+      "... ..X ... ... .X. ... ... X.. \n" +
+      "..X ... ... .X. ... ... X.. ... \n"
     printBoardsToConsole(placeAnyMark(List(Mark(0,0,O)),X))
     assertEquals(output2,printBoardsToString(placeAnyMark(List(Mark(0,0,O)),X)))
   }
@@ -28,7 +35,8 @@ class TicTacToeTest {
   @Test
   def computeAnyGameTest() = {
     // Exercise 3 (ADVANCED!): implement computeAnyGame such that..
-    //computeAnyGame(O, 4) foreach {g => printBoards(g); println()}
+    var count = 0;
+    computeAnyGame(O, 4) foreach {g => printBoardsToConsole(g); count+=1; println()}
     //... X.. X.. X.. XO.
     //... ... O.. O.. O..
     //... ... ... X.. X..
@@ -37,5 +45,7 @@ class TicTacToeTest {
     //... ... .O. XO. XOO
     //... ... ... ... ...
     //... .X. .X. .X. .X.
+
+    assertEquals(3024,count)
   }
 }

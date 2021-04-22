@@ -14,11 +14,16 @@ object TicTacToe {
 
   def find(board: Board, x: Int, y: Int): Option[Player] = board.collectFirst( { case Mark(`x`,`y`, p) => p } )
 
-  def placeAnyMark(board: Board, player: Player): Seq[Board] = {
+  def placeAnyMark(board: Board, player: Player): Seq[Board] =
     for (x <- 0 to 2; y <- 0 to 2; if find(board, x, y).isEmpty ) yield Mark(x, y, player) :: board
-  }
 
-  def computeAnyGame(player: Player, moves: Int): Stream[Game] = ???
+  def computeAnyGame(player: Player, moves: Int): Stream[Game] = moves match {
+    case 0 => Stream(List(Nil))
+    case _ => for (
+          game <- computeAnyGame(player.other, moves - 1);
+          boards <- placeAnyMark(game.head, player)
+         ) yield boards :: game
+  }
 
   def printBoards(game: Seq[Board])(p: String => Any): Unit =
     for (y <- 0 to 2; board <- game.reverse; x <- 0 to 2) {
