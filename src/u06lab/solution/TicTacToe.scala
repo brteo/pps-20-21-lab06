@@ -12,17 +12,59 @@ object TicTacToe {
   type Board = List[Mark]
   type Game = List[Board]
 
-  def find(board: Board, x: Int, y: Int): Option[Player] = board.collectFirst( { case Mark(`x`,`y`, p) => p } )
+  def find(board: Board, x: Int, y: Int): Option[Player] = board.collectFirst({ case Mark(`x`, `y`, p) => p })
 
   def placeAnyMark(board: Board, player: Player): Seq[Board] =
-    for (x <- 0 to 2; y <- 0 to 2; if find(board, x, y).isEmpty ) yield Mark(x, y, player) :: board
+    for (x <- 0 to 2; y <- 0 to 2; if find(board, x, y).isEmpty) yield Mark(x, y, player) :: board
 
   def computeAnyGame(player: Player, moves: Int): Stream[Game] = moves match {
     case 0 => Stream(List(Nil))
     case _ => for (
           game <- computeAnyGame(player.other, moves - 1);
-          boards <- placeAnyMark(game.head, player)
-         ) yield boards :: game
+          board <- placeAnyMark(game.head, player)
+         ) yield board :: game
+  }
+
+  /* Exercise 4 */
+  def gameOver(board: Board): Boolean =
+    checkBoard(board)(row) || checkBoard(board)(column) || checkBoard(board)(diagonal)
+
+  def row(board: Board): Seq[List[Player]] =
+    for (x <- 0 to 2) yield board.collect({ case Mark(`x`, _, p) => p })
+
+  def column(board: Board): Seq[List[Player]] =
+    for (y <- 0 to 2) yield board.collect({ case Mark(_, `y`, p) => p })
+
+  def diagonal(board: Board): Seq[List[Player]] =
+    for (d <- 0 to 1) yield {
+      if (d==0)
+        board.collect({ case Mark(x, y, p) if x == y => p })
+      else
+        board.collect({ case Mark(x, y, p) if x + y == 2 => p })
+    }
+
+  def checkBoard(board: Board)(what: Board => Seq[List[Player]]): Boolean = {
+    val ret = for (list <- what(board))
+      yield list
+        .groupBy(identity)     //group by player
+        .mapValues(_.size)     //for each row/column count occurrence
+        .count(_._2==3)        //filter only 3 occurrence per row/column
+
+    ret.reduceLeft(_+_) > 0
+  }
+
+  def placeAnyMarkUntilOver(board: Board, player: Player): Seq[Board] =
+    if(gameOver(board))
+      Seq(Nil)
+    else
+      for (x <- 0 to 2; y <- 0 to 2; if find(board, x, y).isEmpty) yield Mark(x, y, player) :: board
+
+  def computeAnyGameOver(player: Player, moves: Int): Stream[Game] = moves match {
+    case 0 => Stream(List(Nil))
+    case _ => for {
+      game <- computeAnyGame(player.other, moves - 1)
+      board <- placeAnyMarkUntilOver(game.head, player.other)
+    } yield if(board==Nil) game else board :: game
   }
 
   def printBoards(game: Seq[Board])(p: String => Any): Unit =

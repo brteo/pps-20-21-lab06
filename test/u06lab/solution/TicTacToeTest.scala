@@ -46,6 +46,78 @@ class TicTacToeTest {
     //... ... ... ... ...
     //... .X. .X. .X. .X.
 
-    assertEquals(3024,count)
+    assertEquals(9*8*7*6,count)
+  }
+
+  @Test
+  def checkRows() = {
+    assertTrue(checkBoard(List(Mark(0,0,X), Mark(0,1,X), Mark(0,2,X)))(row))
+    assertTrue(checkBoard(List(Mark(1,0,X), Mark(1,1,X), Mark(1,2,X)))(row))
+    assertTrue(checkBoard(List(Mark(0,0,O), Mark(0,1,O), Mark(0,2,O)))(row))
+
+    assertFalse(checkBoard(List())(row))
+    assertFalse(checkBoard(List(Mark(0,0,X), Mark(0,1,O), Mark(0,2,X)))(row))
+    assertFalse(checkBoard(List(Mark(0,0,X), Mark(1,1,X), Mark(0,2,X)))(row))
+  }
+
+  @Test
+  def checkColumn() = {
+    assertTrue(checkBoard(List(Mark(0,0,X), Mark(1,0,X), Mark(2,0,X)))(column))
+    assertTrue(checkBoard(List(Mark(0,1,X), Mark(1,1,X), Mark(2,1,X)))(column))
+    assertTrue(checkBoard(List(Mark(0,0,O), Mark(1,0,O), Mark(2,0,O)))(column))
+
+    assertFalse(checkBoard(List())(column))
+    assertFalse(checkBoard(List(Mark(0,0,X), Mark(1,0,O), Mark(2,0,X)))(column))
+    assertFalse(checkBoard(List(Mark(0,0,X), Mark(1,1,X), Mark(0,2,X)))(column))
+  }
+
+  @Test
+  def checkDiagonal() = {
+    assertTrue(checkBoard(List(Mark(0,0,X), Mark(1,1,X), Mark(2,2,X)))(diagonal))
+    assertTrue(checkBoard(List(Mark(0,2,X), Mark(1,1,X), Mark(2,0,X)))(diagonal))
+    assertTrue(checkBoard(List(Mark(0,0,O), Mark(1,1,O), Mark(2,2,O)))(diagonal))
+
+    assertFalse(checkBoard(List())(column))
+    assertFalse(checkBoard(List(Mark(0,0,X), Mark(1,1,O), Mark(2,2,X)))(diagonal))
+    assertFalse(checkBoard(List(Mark(0,0,X), Mark(1,1,X), Mark(0,2,X)))(diagonal))
+  }
+
+  @Test
+  def checkGameOver() = {
+    assertTrue(gameOver(List(Mark(0,0,X), Mark(0,1,X), Mark(0,2,X))))
+    assertTrue(gameOver(List(Mark(0,1,X), Mark(1,1,X), Mark(2,1,X))))
+    assertTrue(gameOver(List(Mark(0,0,X), Mark(1,1,X), Mark(2,2,X))))
+
+    assertFalse(gameOver(List()))
+    assertFalse(gameOver(List(Mark(0,0,X), Mark(1,1,O), Mark(2,2,X))))
+    assertFalse(gameOver(List(Mark(0,0,X), Mark(1,1,X), Mark(0,2,X))))
+  }
+
+  @Test
+  def computeAnyGameOverTest() = {
+    //assertEquals(9*8*7*6*5*4*3*2, computeAnyGame(O, 9).size)
+    //assertEquals(255168, computeAnyGameOver(O, 9).size)
+    /*
+    var countWon = 0;
+    var count = 0;
+    computeAnyGameOver(O, 9) foreach {
+      g => if (gameOver(g.head)) countWon+=1 else count +=1
+    }
+    http://www.se16.info/hgb/tictactoe.htm
+    */
+
+    computeAnyGameOver(O, 9) foreach {
+      g => if (gameOver(g.head))  {
+        println(g.length+" PASSI VINTO!");printBoardsToConsole(g); println()
+      }
+      else {
+        println("NON VINTO")
+      }
+    }
+
+
+    //println(count)
+    //println(countWon)
+    // assertEquals(255168, computeAnyGameOver(O, 9).size)
   }
 }
