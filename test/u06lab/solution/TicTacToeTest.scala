@@ -35,8 +35,6 @@ class TicTacToeTest {
   @Test
   def computeAnyGameTest() = {
     // Exercise 3 (ADVANCED!): implement computeAnyGame such that..
-    var count = 0;
-    computeAnyGame(O, 4) foreach {g => printBoardsToConsole(g); count+=1; println()}
     //... X.. X.. X.. XO.
     //... ... O.. O.. O..
     //... ... ... X.. X..
@@ -46,7 +44,12 @@ class TicTacToeTest {
     //... ... ... ... ...
     //... .X. .X. .X. .X.
 
-    assertEquals(9*8*7*6,count)
+    // PRINT TEST
+    // var count = 0;
+    // computeAnyGame(O, 4) foreach {g => printBoardsToConsole(g); count+=1; println()}
+    // assertEquals(9*8*7*6,count)
+
+    assertEquals(9*8*7*6,computeAnyGame(O, 4).size)
   }
 
   @Test
@@ -95,29 +98,14 @@ class TicTacToeTest {
 
   @Test
   def computeAnyGameOverTest() = {
-    //assertEquals(9*8*7*6*5*4*3*2, computeAnyGame(O, 9).size)
-    //assertEquals(255168, computeAnyGameOver(O, 9).size)
-    /*
-    var countWon = 0;
-    var count = 0;
+    var won = 0;
+    var draw = 0;
     computeAnyGameOver(O, 9) foreach {
-      g => if (gameOver(g.head)) countWon+=1 else count +=1
-    }
-    http://www.se16.info/hgb/tictactoe.htm
-    */
-
-    computeAnyGameOver(O, 9) foreach {
-      g => if (gameOver(g.head))  {
-        println(g.length+" PASSI VINTO!");printBoardsToConsole(g); println()
-      }
-      else {
-        println("NON VINTO")
-      }
+      g => if (gameOver(g.head)) won+=1 else draw +=1
     }
 
-
-    //println(count)
-    //println(countWon)
-    // assertEquals(255168, computeAnyGameOver(O, 9).size)
+    // http://www.se16.info/hgb/tictactoe.htm
+    assertEquals(209088, won)
+    assertEquals(46080, draw)
   }
 }

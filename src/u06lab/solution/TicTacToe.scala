@@ -20,9 +20,9 @@ object TicTacToe {
   def computeAnyGame(player: Player, moves: Int): Stream[Game] = moves match {
     case 0 => Stream(List(Nil))
     case _ => for (
-          game <- computeAnyGame(player.other, moves - 1);
-          board <- placeAnyMark(game.head, player)
-         ) yield board :: game
+      game <- computeAnyGame(player.other, moves - 1);
+      board <- placeAnyMark(game.head, player)
+     ) yield board :: game
   }
 
   /* Exercise 4 */
@@ -54,16 +54,16 @@ object TicTacToe {
   }
 
   def placeAnyMarkUntilOver(board: Board, player: Player): Seq[Board] =
-    if(gameOver(board))
-      Seq(Nil)
-    else
+    if(!gameOver(board))
       for (x <- 0 to 2; y <- 0 to 2; if find(board, x, y).isEmpty) yield Mark(x, y, player) :: board
+    else
+      Seq(Nil)
 
   def computeAnyGameOver(player: Player, moves: Int): Stream[Game] = moves match {
     case 0 => Stream(List(Nil))
     case _ => for {
-      game <- computeAnyGame(player.other, moves - 1)
-      board <- placeAnyMarkUntilOver(game.head, player.other)
+      game <- computeAnyGameOver(player.other, moves - 1)
+      board <- placeAnyMarkUntilOver(game.head, player)
     } yield if(board==Nil) game else board :: game
   }
 
@@ -73,7 +73,6 @@ object TicTacToe {
       if (x == 2) { p(" "); if (board == game.head) p("\n")}
     }
 
-  //implicit val printToConsole: String => Unit = print
   def printBoardsToConsole(game: Seq[Board]): Unit = printBoards(game)(print)
   def printBoardsToString(game: Seq[Board]): String = { var m:String = ""; printBoards(game)(m+=_); m }
 }
