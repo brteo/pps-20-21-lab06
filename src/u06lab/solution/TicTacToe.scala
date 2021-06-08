@@ -36,10 +36,10 @@ object TicTacToe {
     for (y <- 0 to 2) yield board.collect({ case Mark(_, `y`, p) => p })
 
   def diagonal(board: Board): Seq[List[Player]] =
-    for (d <- 0 to 1) yield d match {
-      case 0 => board.collect({ case Mark(x, y, p) if x == y => p })
-      case _ => board.collect({ case Mark(x, y, p) if x + y == 2 => p })
-    }
+    Seq(
+      board.collect({ case Mark(x, y, p) if x == y => p }),
+      board.collect({ case Mark(x, y, p) if x + y == 2 => p })
+    )
 
   def checkBoard(board: Board)(what: Board => Seq[List[Player]]): Boolean = {
     val ret = for (list <- what(board))
